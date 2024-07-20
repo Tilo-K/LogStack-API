@@ -9,4 +9,5 @@ public interface IUserService
     Task<bool> UserExists(string username);
     Task<bool> UserExists(User user);
     Task EnsureUser(string username, string password, string email, bool admin = false);
+    Task<User?> GetUserById(Ulid userId);
 }

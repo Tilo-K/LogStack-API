@@ -43,6 +43,13 @@ public class UserService(AppDbContext dbContext) : IUserService
         return resultUser != null;
     }
 
+    public async Task<User?> GetUserById(Ulid userId)
+    {
+        User? resultUser = await dbContext.Users.Where(u => u.Id.Equals(userId)).FirstOrDefaultAsync();
+
+        return resultUser;
+    }
+    
     public async Task<bool> UserExists(User user)
     {
         return await UserExists(user.Username);

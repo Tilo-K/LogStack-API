@@ -13,7 +13,6 @@ namespace LogStack.Controllers;
 [Route("[controller]")]
 public class AuthController(ITokenService tokenService, IUserService userService) : ControllerBase
 {
-    
     [HttpPost("login")]
     public async Task<ActionResult<LoginResult>> Login([FromBody] LoginData loginData)
     {
@@ -34,5 +33,16 @@ public class AuthController(ITokenService tokenService, IUserService userService
         };
 
         return Ok(loginResult);
+    }
+
+    [HttpGet("me")]
+    [TypeFilter(typeof(AuthCheckFilter))]
+    [AuthCheck(NeedsToBeAdmin = false)]
+    public async Task<ActionResult<User>> Me()
+    {
+        Token userToken = Token.FromHttpContext(HttpContext);
+        User? user = await userService.GetUserById(userToken.UserId);
+
+        return user is not null ? Ok(user) : NotFound();
     }
 }

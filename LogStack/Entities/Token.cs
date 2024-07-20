@@ -1,6 +1,8 @@
-﻿using System.Security.Cryptography;
+﻿using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Primitives;
 
 namespace LogStack.Entities;
 
@@ -10,7 +12,7 @@ public class Token
 
     public string[] ProjectAccess { get; set; }
 
-    public DateTime ExpirationDate { get; set; } = DateTime.Now.AddMinutes(30);
+    public DateTime ExpirationDate { get; set; } = DateTime.UtcNow.AddMinutes(30);
 
     public bool Admin { get; set; }
 
@@ -28,9 +30,11 @@ public class Token
         return Convert.ToBase64String(hashBytes);
     }
 
-    public bool IsHashValid(string secret)
+    public bool IsValid(string secret)
     {
-        return GetHash(secret).Equals(Hash);
+        bool expired = DateTime.UtcNow > ExpirationDate;
+        string currentHash = GetHash(secret);
+        return currentHash.Equals(Hash) && !expired;
     }
 
     public static Token CreateToken(Ulid userId, string[] projectAccess, bool admin, string secret)
@@ -55,12 +59,24 @@ public class Token
             }
         };
     
-        string json = Convert.FromBase64String(base64).ToString() ?? throw new Exception("Invalid Token");
+        string json = Encoding.ASCII.GetString(Convert.FromBase64String(base64)) ?? throw new Exception("Invalid Token");
         Token token = JsonSerializer.Deserialize<Token>(json, options) ?? throw new Exception("Invalid Token");
 
         return token;
     }
 
+    public static Token FromHttpContext(HttpContext context)
+    {
+        StringValues authHeaders = context.Request.Headers.Authorization;
+        string? authToken = authHeaders.FirstOrDefault();
+
+        if (authToken is null) throw new Exception("No token found in the Auth Header.");
+
+        Token token = CreateFromBase64(authToken);
+        
+        return token;
+    }
+    
     public string ToBase64()
     {
         var options = new JsonSerializerOptions()
