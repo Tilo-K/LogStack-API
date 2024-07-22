@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 builder.Services.AddCors(options =>
 {
@@ -38,6 +39,7 @@ builder
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITokenSecretService, TokenSecretService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped <AuthCheckAttribute> ();
 
 var app = builder.Build();

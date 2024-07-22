@@ -43,6 +43,11 @@ public class AuthController(ITokenService tokenService, IUserService userService
         Token userToken = Token.FromHttpContext(HttpContext);
         User? user = await userService.GetUserById(userToken.UserId);
 
+        if (user is not null)
+        {
+            user.Password = "";
+        }
+        
         return user is not null ? Ok(user) : NotFound();
     }
 }
