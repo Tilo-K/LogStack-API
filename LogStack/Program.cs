@@ -21,6 +21,16 @@ builder.Services.AddCors(options =>
                 .AllowAnyHeader()
                 .AllowCredentials()
                 .AllowAnyMethod();
+            
+            b.WithOrigins("http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowCredentials()
+                .AllowAnyMethod();
+            
+            b.WithOrigins(Environment.GetEnvironmentVariable("FRONTEND_URL") ?? "")
+                .AllowAnyHeader()
+                .AllowCredentials()
+                .AllowAnyMethod();
         });
 });
 
