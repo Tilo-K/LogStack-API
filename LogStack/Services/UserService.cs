@@ -52,7 +52,13 @@ public class UserService(AppDbContext dbContext) : IUserService
 
     public async Task<IEnumerable<User>> GetUsers()
     {
-        return await dbContext.Users.ToListAsync();
+        var users = await dbContext.Users.ToListAsync();
+        foreach (User user in users)
+        {
+            user.Password = "";
+        }
+
+        return users;
     }
 
     public async Task DeleteUser(Ulid userId)
