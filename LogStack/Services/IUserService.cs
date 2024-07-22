@@ -10,4 +10,6 @@ public interface IUserService
     Task<bool> UserExists(User user);
     Task EnsureUser(string username, string password, string email, bool admin = false);
     Task<User?> GetUserById(Ulid userId);
+    Task<IEnumerable<User>> GetUsers();
+    Task DeleteUser(Ulid userId);
 }

@@ -49,7 +49,17 @@ public class UserService(AppDbContext dbContext) : IUserService
 
         return resultUser;
     }
-    
+
+    public async Task<IEnumerable<User>> GetUsers()
+    {
+        return await dbContext.Users.ToListAsync();
+    }
+
+    public async Task DeleteUser(Ulid userId)
+    {
+        await dbContext.Users.Where(u => u.Id == userId).ExecuteDeleteAsync();
+    }
+
     public async Task<bool> UserExists(User user)
     {
         return await UserExists(user.Username);
