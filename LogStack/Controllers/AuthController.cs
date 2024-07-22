@@ -50,4 +50,13 @@ public class AuthController(ITokenService tokenService, IUserService userService
         
         return user is not null ? Ok(user) : NotFound();
     }
+
+    [HttpPost("refresh")]
+    public async Task<ActionResult<string>> RefreshToken([FromQuery] string refreshToken)
+    {
+        Token? newToken = await tokenService.RenewToken(refreshToken);
+        if (newToken is null) return Unauthorized();
+
+        return newToken.ToBase64();
+    }
 }
