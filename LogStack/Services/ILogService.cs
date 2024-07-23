@@ -1,4 +1,5 @@
 ﻿using LogStack.Domain.Models;
+using LogStack.Entities;
 
 namespace LogStack.Services;
 
@@ -11,4 +12,6 @@ public interface ILogService
         string? content = null, int top = 100, int skip = 0);
 
     Task DeleteOldLogs(DateTime timeLimit);
+
+    Task<LogFilterOptions> GetFilterOptions(Ulid projectId);
 }

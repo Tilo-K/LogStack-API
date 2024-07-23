@@ -1,5 +1,6 @@
 ﻿using LogStack.Domain;
 using LogStack.Domain.Models;
+using LogStack.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -78,6 +79,23 @@ public class LogService(AppDbContext dbContext) : ILogService
         logs = logs.Take(top);
 
         return await logs.ToListAsync();
+    }
+
+    public async Task<LogFilterOptions> GetFilterOptions(Ulid projectId)
+    {
+        LogFilterOptions options = new LogFilterOptions();
+        options.LogLevels = await dbContext.Logs
+            .Where(l => l.ProjectId == projectId)
+            .Select(l => l.LogLevel)
+            .Distinct()
+            .ToListAsync();
+        options.Origins = await dbContext.Logs
+            .Where(l => l.ProjectId == projectId)
+            .Select(l => l.Origin)
+            .Distinct()
+            .ToListAsync();
+
+        return options;
     }
 
     public async Task DeleteOldLogs(DateTime timeLimit)

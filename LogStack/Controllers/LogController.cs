@@ -1,4 +1,5 @@
 ﻿using LogStack.Domain.Models;
+using LogStack.Entities;
 using LogStack.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -55,5 +56,16 @@ public class LogController(ILogService logService, IProjectService projectServic
         long count = await logService.CountLogs(projectId: Ulid.Parse(projectId));
 
         return Ok(count);
+    }
+    
+    [HttpGet("getFilterOptions")]
+    public async Task<ActionResult<LogFilterOptions>> GetFilterOptions([FromQuery] string projectId)
+    {
+        bool validRequest = await IsValidLogRequest(HttpContext, projectId);
+        if (!validRequest) return BadRequest();
+
+        LogFilterOptions options = await logService.GetFilterOptions(projectId: Ulid.Parse(projectId));
+
+        return Ok(options);
     }
 }
