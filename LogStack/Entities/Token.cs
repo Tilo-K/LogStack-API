@@ -72,6 +72,7 @@ public class Token
 
         if (authToken is null) throw new Exception("No token found in the Auth Header.");
 
+        authToken = authToken.Replace("Bearer ", "");
         Token token = CreateFromBase64(authToken);
         
         return token;

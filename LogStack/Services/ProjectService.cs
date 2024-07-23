@@ -47,7 +47,8 @@ public class ProjectService(AppDbContext dbContext, IUserService userService) : 
         };
 
         EntityEntry<Project> entry = await dbContext.Projects.AddAsync(newProject);
-
+        await dbContext.SaveChangesAsync();
+        
         return entry.Entity;
     }
 

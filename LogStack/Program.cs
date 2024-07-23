@@ -49,6 +49,7 @@ builder
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITokenSecretService, TokenSecretService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped <AuthCheckAttribute> ();
 
