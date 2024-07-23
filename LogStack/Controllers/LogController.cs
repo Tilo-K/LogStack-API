@@ -28,7 +28,7 @@ public class LogController(ILogService logService, IProjectService projectServic
         bool validRequest = await IsValidLogRequest(HttpContext, projectId);
         if (!validRequest) return BadRequest();
 
-        Log log = await logService.AddLogEntry(Ulid.Parse(projectId), logLevel, projectId, time, content);
+        Log log = await logService.AddLogEntry(Ulid.Parse(projectId), logLevel, origin, time, content);
 
         return Ok(log);
     }

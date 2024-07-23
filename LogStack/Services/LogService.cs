@@ -15,7 +15,10 @@ public class LogService(AppDbContext dbContext) : ILogService
             Time = time,
             Content = content,
             ProjectId = projectId,
-            LogLevel = logLevel
+            LogLevel = logLevel,
+            Day = time.Day,
+            Month = time.Month,
+            Year = time.Year
         };
 
         EntityEntry<Log> addedLog = await dbContext.Logs.AddAsync(newLog);
