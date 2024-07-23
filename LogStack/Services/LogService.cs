@@ -19,7 +19,7 @@ public class LogService(AppDbContext dbContext) : ILogService
         };
 
         EntityEntry<Log> addedLog = await dbContext.Logs.AddAsync(newLog);
-
+        await dbContext.SaveChangesAsync();
         return addedLog.Entity;
     }
 

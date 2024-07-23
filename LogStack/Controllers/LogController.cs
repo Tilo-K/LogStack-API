@@ -33,7 +33,7 @@ public class LogController(ILogService logService, IProjectService projectServic
         return Ok(log);
     }
 
-    [HttpPost("getLogs")]
+    [HttpGet("getLogs")]
     public async Task<ActionResult<IEnumerable<Log>>> GetLogs([FromQuery] string secret, [FromQuery] string projectId,
         [FromQuery] string? logLevel = null, [FromQuery] string? origin = null,
         [FromQuery] string? content = null, [FromQuery] int top = 100, [FromQuery] int skip = 0)
@@ -44,5 +44,16 @@ public class LogController(ILogService logService, IProjectService projectServic
         IEnumerable<Log> logs = await logService.GetLogs(Ulid.Parse(projectId), logLevel, origin, content, top, skip);
 
         return Ok(logs);
+    }
+    
+    [HttpGet("getLogCount")]
+    public async Task<ActionResult<long>> GetLogCount([FromQuery] string projectId)
+    {
+        bool validRequest = await IsValidLogRequest(HttpContext, projectId);
+        if (!validRequest) return BadRequest();
+
+        long count = await logService.CountLogs(projectId: Ulid.Parse(projectId));
+
+        return Ok(count);
     }
 }
